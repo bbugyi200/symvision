@@ -76,8 +76,8 @@ branch = true
 
 [tool.coverage.report]
 show_missing = true
+fail_under = 94
 exclude_lines = [
     "if __name__ == .__main__.",
     "if TYPE_CHECKING:",
 ]
-

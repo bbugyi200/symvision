@@ -2,7 +2,10 @@
 
 import subprocess
 import sys
+import runpy
 from pathlib import Path
+
+import pytest
 
 
 def _run_symvision(directory: Path) -> subprocess.CompletedProcess[str]:
@@ -57,3 +60,12 @@ def test_missing_directory_is_a_violation(tmp_path: Path) -> None:
 
     assert result.returncode == 1
     assert "is not a directory" in result.stderr
+
+
+def test_module_entrypoint(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    monkeypatch.setattr(sys, "argv", ["symvision", str(tmp_path / "missing")])
+
+    with pytest.raises(SystemExit) as exc_info:
+        runpy.run_module("symvision", run_name="__main__")
+
+    assert exc_info.value.code == 1
